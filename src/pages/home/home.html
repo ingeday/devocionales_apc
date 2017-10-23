@@ -1,14 +1,57 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
-      Ionic Blank
+      APC Ps.Mao
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content>
+  <div class="tagLatest">Último Publicado</div>
+  <ion-card *ngFor="let a of locales; let i=index">
+    <ion-card-content>
+      <ion-card-title>
+        {{ formatFecha(a.fecha) }}
+        </ion-card-title>
+        Publicado: <span class="tagTiempo">{{ buscarTiempoEnRef(a.$key) }}.</span><br />
+        Reproducciones: <span class="tagTiempo">{{a.reproducciones}}.</span>
+    </ion-card-content>
+    <ion-row>
+      <ion-col> 
+        <button clear ion-button small color="primary" (click)="like(a)">
+          <ion-icon name='thumbs-up'> {{a.likes}} Likes</ion-icon> 
+          <div></div>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button *ngIf="isPlaying(a.$key)===false" clear ion-button small color="primary" (click)="play(a)">
+          <ion-icon name='play'> Play</ion-icon>
+        </button>
+        <button *ngIf="isPlaying(a.$key)===true" clear ion-button small color="primary" (click)="pause()">
+          <ion-icon name='pause'> Pause</ion-icon>
+        </button>
+      </ion-col>
+      <ion-col center text-center>
+        <button clear ion-button small color="primary" (click)="urlShortener(a.audio)">
+          <ion-icon name='share'> Compartir</ion-icon>
+          
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 </ion-content>
+<ion-footer>
+    <ion-item>
+      <ion-range max="{{reproductor.tiempoTotal}}" [(ngModel)]="reproductor.tiempo" color="secondary" (ionChange)="setTimeAudio(reproductor.tiempo)">
+        <ion-label range-left>
+          <button clear *ngIf="reproductor.status!=='playing'" ion-button small color="primary" (click)="play(currentAudio)">
+            <ion-icon name='play'></ion-icon>
+          </button>
+          <button *ngIf="reproductor.status==='playing'" clear ion-button small color="primary" (click)="pause()">
+            <ion-icon name='pause'></ion-icon>
+          </button>
+        </ion-label>
+        <ion-label range-right>{{formatoTiempo(reproductor.tiempo)}} / {{formatoTiempo(reproductor.tiempoTotal)}}</ion-label>
+      </ion-range>
+    </ion-item>
+</ion-footer>
